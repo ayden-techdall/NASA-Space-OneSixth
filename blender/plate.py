@@ -83,5 +83,5 @@ def plate():
     label("Caption continuation", 211, 947,
           "The table gives the measured limits at normal pressure for comparison.", 27)
     label("Sources", 94, 1014, "Sources: NASA NTRS 19930011018, 20260001966, 20040084156.", 23)
-    label("Credit", 1255, 1014, f"One-Sixth  |  Ayden Tindall and Charles Andrade  |  {date}", 21)
+    label("Credit", 1255, 1014, f"One-Sixth  |  Ayden Tindall  |  {date}", 21)
     return shapes

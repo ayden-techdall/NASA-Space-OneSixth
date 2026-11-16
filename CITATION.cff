@@ -5,8 +5,6 @@ type: dataset
 authors:
   - family-names: Tindall
     given-names: Ayden
-  - family-names: Andrade
-    given-names: Charles
 version: "2.0"
 date-released: "2026-11-15"
 license: CC0-1.0

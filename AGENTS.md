@@ -4,7 +4,7 @@ Read this file first. It tells you what the project is, which numbers are safe t
 
 ## 1. The project in five lines
 
-- **One-Sixth** is a NASA Space Apps Challenge 2026 entry for the challenge "Flame in Freefall". The team is Ayden Tindall and Charles Andrade.
+- **One-Sixth** is a NASA Space Apps Challenge 2026 entry for the challenge "Flame in Freefall". The entrant is Ayden Tindall.
 - NASA plans Moon habitats with oxygen-rich air: 34% O2 at 8.2 psia. No fire experiment has run on the Moon.
 - We gathered NASA's reduced-gravity fire data, fitted two models, and made each one predict Earth results it had never seen. One passed, one passed weakly, one failed and was dropped.
 - A separate reviewer attacked the claims. We withdrew or weakened what it broke.

@@ -1,6 +1,6 @@
 # One-Sixth: the first fire forecast for the Moon base
 
-NASA Space Apps Challenge 2026, **Flame in Freefall** · forecast v2 · Ayden Tindall and Charles Andrade
+NASA Space Apps Challenge 2026, **Flame in Freefall** · forecast v2 · Ayden Tindall
 
 ![Figure 1. Oxygen limits for thin cellulose tissue: forecast 13.8–17.9% at lunar gravity and habitat pressure, against 34% planned habitat air; measured limits at normal pressure for comparison](blender/renders/one_sixth_hero.png)
 
