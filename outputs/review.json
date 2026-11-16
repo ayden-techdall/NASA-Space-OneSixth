@@ -1,0 +1,34 @@
+[
+ {
+  "finding": "Model 1's Earth check depends on a modelling choice. With a different starting assumption about the blow-off slope it predicts 14.3% (13.9–16.1%) and fails.",
+  "action": "Confirmed with our own rerun. Model 1's pass is labelled weak and the forecast leans on Model 2."
+ },
+ {
+  "finding": "The lunar limit at 14.7 psia and the gravity penalty mostly restate NASA's 1/6-g aircraft tests, which are in the training data. The stated probability of 1.00 was built into the constraints.",
+  "action": "Reworded: these are NASA measurements that the models reproduce, not predictions. The probability claim is removed."
+ },
+ {
+  "finding": "“No fire experiment in lunar gravity” is wrong. Aircraft and drop-tower tests have reached lunar gravity for seconds at a time.",
+  "action": "Changed everywhere to “no fire experiment has run on the Moon”."
+ },
+ {
+  "finding": "Short aircraft tests can bias low-gravity limits low: a flame that has not yet died when the 20 seconds end counts as burning. That would overstate the penalty.",
+  "action": "Added as a stated risk and made into Forecast 2, which a long lunar test will settle."
+ },
+ {
+  "finding": "Model 2 had no floor on the starved side. It allowed cellulose to burn below 10% oxygen in weak drafts, which contradicts the evidence.",
+  "action": "Model 2 is no longer shown below its data. With a floor added the results barely move: Earth check 15.8%, habitat limit 15.7%."
+ },
+ {
+  "finding": "The pressure step depends on an assumed reaction order, which was mislabelled in the code.",
+  "action": "Label fixed. Under the alternative assumption the habitat limit is 14.5% instead of 15.4%, so the forecast range was widened to cover both."
+ },
+ {
+  "finding": "The two models share the same evidence, so their agreement is not independent confirmation. The Earth check mainly rules out “gravity has no effect”.",
+  "action": "Now stated next to the checks and the forecast table."
+ },
+ {
+  "finding": "Paper with an Earth limit near 16% will obviously burn in 34% oxygen. No model is needed for that.",
+  "action": "Agreed. The habitat result is framed as a sanity check, and the scorable part is the number."
+ }
+]

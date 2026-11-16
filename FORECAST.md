@@ -1,108 +1,136 @@
-# One-Sixth Forecast v1: How thin materials burn at lunar gravity in Moon-base air
+# One-Sixth Forecast v2: How thin materials burn at lunar gravity in Moon-base air
 
 **Registered:** 15 November 2026, before any fire experiment has run on the Moon.
 **Authors:** Ayden Tindall, Charles Andrade (NASA Space Apps Challenge 2026, "Flame in Freefall")
 **License:** CC0 1.0 (public domain)
 **Archive:** Zenodo DOI: *to be added on deposit*
 
+v2 replaces v1 from earlier the same day. It adds a second model, a second material, an independent review, and weaker wording where the review showed v1 overclaimed. §8 lists every change.
+
 ## 1. The question
 
-NASA plans lunar landers, habitats and rovers with **8.2 psia total pressure and 34% oxygen** (control bands allow up to 37%) [1]. NASA screens materials with a 1 g upward-burning test. Microgravity research has shown that 1 g may not be the most flammable condition [1, 2]. No fire experiment has yet run in lunar gravity. The first, Flammability of Materials on the Moon (FM2), is planned for an uncrewed lunar delivery [1].
+NASA plans lunar landers, habitats and rovers with **8.2 psia total pressure and 34% oxygen** (control bands allow up to 37%) [1]. NASA screens materials with an upward-burning test at Earth gravity. Microgravity research has shown that Earth gravity may not be the most flammable condition [1, 2].
 
-We forecast how the oxygen limit for flame spread over a thin material changes between Earth and lunar gravity. We then carry that forecast to the habitat atmosphere.
+No fire experiment has run on the Moon. The first, Flammability of Materials on the Moon (FM2), is planned for an uncrewed lunar delivery [1]. Lunar gravity itself has been reached before, but only briefly: aircraft parabolas of about 20 seconds [3, 4] and drop-tower centrifuge tests [1].
+
+We ask two things. Do NASA's short reduced-gravity tests agree with Earth results under a simple physical model? And what does that model say about the combination nobody has tested: lunar gravity at habitat pressure?
 
 ## 2. Scope
 
-- **Material class:** thermally thin cellulose, about 1×10⁻³ g/cm² (tissue or paper class).
-- **Mode:** downward (opposed-flow) flame spread in still air, where buoyancy supplies the only flow.
-- **Not covered:** upward (concurrent) spread, thick materials, ventilated cabins, ignition. These are listed as next steps in §7.
+- **Material:** thin cellulose tissue, about 1×10⁻³ g/cm² (Kimwipe class).
+- **Mode:** downward (opposed-flow) flame spread in still air, where buoyancy supplies the only draft.
+- **Not covered:** upward spread, thick materials, ventilated cabins, ignition. Thin acrylic (PMMA) was attempted and failed its Earth check (§5), so no PMMA forecast is made.
 
 ## 3. Evidence
 
-All rows are in `data/flammability_evidence.csv`, each with a citation and its role in the model.
+`data/flammability_evidence.csv` holds 41 rows, each with a citation and its role. `data/raw/` holds NASA's test tables for BASS-II (129 tests), BASS (122), and Saffire I, II and III, as served by NASA PSI [6].
 
 | Gravity | What was observed | Role |
 |---|---|---|
 | 0.05–0.1 g | Oxygen limit 13–14% (KC-135 aircraft) [3] | training |
-| 0.1 g | Steady burning at 14% O₂ [4] | training |
-| 1/6 g | Steady burning at 15% O₂; no survival at 14% O₂ above 0.1 g [4] | training |
-| orbit, 5–20 cm/s flow | Flames sustained even at 14% O₂ [5] | prior on the minimum |
+| 0.1 g | Flame propagated at 14% O₂ [4] | training |
+| 1/6 g | Steady burning at 15% O₂; flames at 14% O₂ did not survive ignition above 0.1 g [4] | training |
+| orbit, 5–20 cm/s flow | Flames sustained even at 14% O₂ [5] | training |
 | **1 g** | **Limit 15.6% [3]; 16.5% [5]** | **held out for the Earth check** |
 
-We also archive the full BASS-II test table from NASA PSI (129 ISS tests, DOI 10.60555/4qc4-de67) [6] and 21 extinction, ignition and spread observations for thin PMMA films and SIBAL fabric. These are part of the dataset but are not used by this version of the model.
+Two things in the wider dataset matter for context:
 
-## 4. Model
+- **Orbit has already seen near-habitat air.** Saffire-VI burned cotton-fiberglass fabric at 54.1 kPa and 31.0% O₂, and thick PMMA at about 55 kPa and 29–30% O₂ [9]. What is untested is lunar gravity in that air.
+- **Earth is not always the safer case.** In Saffire-II, three silicone samples did not burn in orbit but burned, fully or in part, in Earth-gravity tests [6]. The direction of the gravity effect depends on the material.
 
-We use published physics:
+## 4. Models
 
-1. In still air, buoyancy drives the flow that feeds a downward flame. Its characteristic speed scales as U_b ∝ (g·α·ΔT/T)^(1/3), so ln U_b = ln(g)/3 + constant.
-2. Opposed-flow flammability maps for thin fuels in microgravity are U-shaped. Radiative heat loss quenches the flame at low flow, and kinetic blowoff ends it at high flow [2, 4, 5].
-3. On the blowoff side, extinction occurs at a critical Damköhler number. Because flame temperature rises roughly linearly with O₂ over a few points, the limit is close to linear in ln U.
+**Model 1 (simple curve).** In still air the buoyant draft scales as g^(1/3). The oxygen limit is a two-sided line in x = ln(g)/3:
 
-The resulting model is:
+    LOC(g) = L* + s·max(0, x − x*) + q·max(0, x* − x)
 
-    LOC(g) = L* + s·max(0, x − x*) + q·max(0, x* − x),   x = ln(g)/3
+The step from 14.7 to 8.2 psia uses NASA White Sands slopes for upward tests (0.251–0.975 points of O₂ per psia [7]), applied as a relative increase.
 
-It has four parameters: the minimum limit L*, where that minimum sits (g*), and the slopes of the blowoff and quench branches. We fit it by rejection sampling (approximate Bayesian computation). We draw 4 million parameter sets from broad priors and keep those consistent with every training observation within ±0.25% O₂.
+**Model 2 (physics).** A flame survives while R_rad + 1/Da < 1, the structure of the simplified model of Takahashi and co-workers [8]:
 
-**Pressure.** To move from 14.7 to 8.2 psia, we use NASA White Sands data for 1 g upward tests: the oxygen limit rises 0.251 to 0.975 percentage points per psia of pressure drop for materials with limits of 25–35% [7]. We apply this as a relative increase, sampled uniformly over that range. **This is the largest extrapolation in the forecast.**
+    R_rad = a / (p·V·(Tf − Tv))          radiative loss against conduction from the flame
+    1/Da  = b·V²·exp(θ/Tf) / (X·pⁿ)      chemical time against flow time
+    Tf    = T∞ + ΔT·X/0.21               flame temperature rises with oxygen
+    V     = Vb1·(g/p)^(1/3)              buoyant draft in still air
 
-## 5. Earth check (rule fixed before the first run)
+We could not read the paywalled equations, so this is our own implementation of that structure. The scale constants a and b are calibrated from data. The pressure exponent n is a choice: we sample 0–1 (overall reaction order 2–3) because that range brackets the measured White Sands pressure trend, and we rerun with −1 to 0 (order 1–2) as a sensitivity case.
 
-> Fit using only reduced-gravity evidence. Predict the 1 g limit. PASS if both measured 1 g values (15.6%, 16.5%) fall inside the 90% predictive interval AND the median is within 1.5 points of their mean.
+Both models are fitted by rejection sampling: draw parameters from broad ranges, and keep only the sets consistent with every training observation within ±0.25% O₂.
 
-| | Value |
-|---|---|
-| Predicted 1 g limit, no Earth data | **15.1% O₂** (90% range 14.0–22.0%) |
-| Measured | 15.6% [3], 16.5% [5] |
-| Result | **PASS**: both inside; median 1.0 point from their mean |
-| Without the ambiguous "no survival at 1/6 g" row | 14.9% (13.5–21.8%), both still inside |
+## 5. Earth checks (rules fixed in the code before each model's first run)
 
-**Caveat.** The interval is wide and the median runs about one point low. The check shows the reduced-gravity data and the physics agree with Earth results. It does not show that the model is precise at 1 g.
+> Fit with all Earth-gravity data hidden. Predict the Earth limit. PASS if every measured value falls inside the 90% predictive interval AND the median is within 1.5 points of the measured mean. A model that fails does not forecast.
 
-## 6. Forecast (model refitted with the 1 g data added)
+| Model, material | Predicted Earth limit | Measured | Result |
+|---|---|---|---|
+| Model 1, cellulose | 15.1% (14.0–22.0) | 15.6, 16.5 | **Weak pass** |
+| Model 2, cellulose | 16.2% (15.4–17.2) | 15.6, 16.5 | **Pass** |
+| Model 2, thin PMMA | 20.5% (19.1–22.0) | 17.0 | **Fail: no forecast** |
 
-| Quantity (thin cellulose, downward, still air) | Median | 90% range |
+- **Model 1's pass is weak and depends on a modelling choice.** Its interval is 8 points wide. With a log-uniform prior on the blow-off slope it predicts 14.3% (13.9–16.1) and fails. The independent review found this and we confirmed it (`model/sensitivity.py`).
+- **Model 2 passes on cellulose** and still passes in both variants we ran: with a floor on the starved side, 15.8% (15.0–16.6); with reaction order 1–2, 16.2% (15.4–17.2).
+- **Model 2 fails on thin PMMA.** Its training data are fan-driven tests on the space station, and this simple model did not carry them over to Earth's buoyant flow. A diagnostic run after the failure, without the low-speed BASS-II rows, predicts 18.0% (15.8–21.2). That locates the tension, and it is not a pass. Likely causes are the low-speed flow readings, mixed film thicknesses (0.1–0.2 mm), and the missing boundary-layer correction that the literature applies [8].
+- **What the check rules out.** "Gravity makes no difference" would predict about 14.5% on Earth and fails. The check does not distinguish one curve shape from another.
+
+## 6. Results
+
+| Thin cellulose tissue, downward, still air | Model 1 | Model 2 |
 |---|---|---|
-| Oxygen limit, lunar gravity (0.165 g), 14.7 psia | **14.4%** | 13.8–14.7% |
-| Oxygen limit, Earth gravity, 14.7 psia | 15.9% | 15.4–16.6% |
-| **Lunar gravity penalty** (Earth limit minus lunar limit, same pressure) | **1.6 points** | 1.0–2.4 points |
-| Probability the lunar limit is below the Earth limit | 1.00 (all accepted draws) | |
-| Gravity of maximum flammability, g* | 0.053 g | 0.023–0.47 g |
-| Oxygen limit, lunar gravity, **8.2 psia** | **16.4%** | 15.0–17.9% |
-| Margin below 34% O₂ habitat air | 17.6 points | 16.1–19.0 points |
+| Limit at lunar gravity, 14.7 psia | 14.4% (13.8–14.7) | 14.2% (13.8–14.6) |
+| Limit at Earth gravity, 14.7 psia | 15.9% (15.4–16.6) | 16.1% (15.5–16.7) |
+| Lunar limit below Earth limit by | 1.6 points (1.0–2.4) | 1.9 points (1.5–2.3) |
+| Limit at lunar gravity, 8.2 psia | 16.4% (15.0–17.9) | 15.4% (14.7–16.1) |
+| Same, Model 2 with a starved-side floor | | 15.7% (15.1–16.4) |
+| Same, Model 2 with reaction order 1–2 | | 14.5% (13.8–15.1) |
 
-### Scorable claims
+Median, with the 90% range in brackets.
 
-1. **Gravity penalty.** At the same pressure, the downward oxygen limit of a thin charring fuel at lunar gravity is **1.0–2.4 points lower** than at 1 g. This would be falsified by a lunar or lunar-g centrifuge measurement outside that range for a comparable thin cellulosic fuel.
-2. **Direction.** Lunar gravity is more flammable than Earth gravity for downward spread of thin fuels. This would be falsified if the lunar limit is at or above the 1 g limit.
-3. **Habitat.** In 34% O₂ at 8.2 psia, thin cellulosic materials will sustain downward spread at lunar gravity with a large margin. Their limit is near 16%, so materials of this class cannot be made safe by atmosphere choice within NASA's planned bands.
+**The first three rows are measurements restated, not predictions.** NASA's aircraft tests already bracket the lunar limit at 14.7 psia between 14% and 15% [4], and the fits are constrained to that bracket and to the Earth values. The two models share this evidence, so their agreement is not independent confirmation.
+
+### Scorable forecasts
+
+1. **Habitat air.** For thin cellulose tissue spreading downward in still air at lunar gravity and 8.2 psia, the oxygen limit lies between **13.8% and 17.9%**, most likely near 15.5%. No test exists at this combination. The range covers both models and every variant above. A measurement outside it falsifies the forecast.
+2. **A long burn on the Moon.** The 20-second aircraft result will hold for a steady flame: at 14.7 psia the lunar limit for this material lies between 13.8% and 14.7%, below its Earth limit. A long lunar or lunar-gravity test that finds the limit at or above the Earth limit falsifies this.
+3. **Sanity check, not discovery.** In 34% O₂ at 8.2 psia this material burns with a wide margin. Paper with an Earth limit near 16% was always going to.
 
 ### What this means for fire rules
 
-- A 1 g screening result does not carry an automatic margin to the Moon. For thin fuels, the lunar limit sits about 1.6 points lower.
-- The headline uncertainty is pressure, not gravity. We recommend that LUCI, FM2 and follow-on lunar experiments include **at least one thin cellulosic sample tested downward at 8.2 psia across 14–20% O₂**. That directly tests the pressure-gravity extrapolation this forecast relies on.
+- For thin cellulosic materials, an Earth screening result carries no built-in margin to the Moon. The lunar limit sits 1 to 2.4 points lower in the data we have.
+- NASA has flagged that stopping ventilation, which puts flames out on the space station [2], may not work in partial gravity. Scaling Earth's buoyant draft of roughly 35 cm/s [8] by g^(1/3) puts the natural draft at lunar gravity near 19 cm/s, inside the 5–20 cm/s range where these flames survive in orbit [5].
+- The biggest open number is pressure, not gravity. We recommend that lunar experiments include **one thin cellulosic sample burned downward at 8.2 psia across 13–19% O₂**. It tests forecast 1 directly.
 
-## 7. Limits and next steps
+## 7. Risks and limits
 
-- The 1 g, 0.05–0.1 g and 1/6 g data come from short (~20 s) aircraft parabolas and drop towers. Long-duration lunar data may shift limits.
-- Thin cellulose stands in for papers and light fabrics. It does not stand in for Nomex, Kapton or thick PMMA. Takahashi et al. found that high-pyrolysis-temperature materials can behave the opposite way [8].
-- Next steps: add upward (concurrent) spread to compare directly with FM2's Synergy Pro fabric (NASA expects a lunar limit of 24–26% at 8.2 psia [1]); fit the BASS-II thin-PMMA and SIBAL extinctions; replace the empirical pressure slope with a Damköhler-based pressure term.
+- **Short tests may bias low-gravity limits low.** A flame that has not yet died when a 20-second parabola ends counts as burning. That would overstate the lunar penalty. Forecast 2 is exposed to this.
+- **The two Earth values come from different sources.** 15.6% is from the same apparatus as the partial-gravity data [3]. 16.5% is quoted for opposed flow without the fuel or apparatus stated [5].
+- **Pressure is an extrapolation in both models.** Model 1 borrows upward-test slopes. Model 2 depends on an assumed reaction order.
+- **Model 2 has no cellulose data below about 10 cm/s.** It cannot place the starved side of the curve, and we do not report it there.
+- **One material class.** High-pyrolysis-temperature materials can behave the opposite way [8], and Saffire-II's silicone did.
 
-## 8. Reproducibility
+## 8. Changes from v1
+
+- Added Model 2, the PMMA attempt, the BASS and Saffire tables, and 16 evidence rows.
+- Corrected two dataset rows (BII-B18, BII-B19). v1 read "10 blowoff" as 10 cm/s; the air-speed display tops out at 10, so the true speed was higher.
+- Withdrew "no fire experiment has run in lunar gravity". Aircraft and drop-tower tests have.
+- Withdrew "probability 1.00 that the lunar limit is below the Earth limit". It was built into the constraints.
+- Reclassified the lunar limit at 14.7 psia and the gravity penalty from forecasts to restated measurements.
+- Downgraded Model 1's Earth check to a weak pass.
+- Widened the habitat forecast from 15.0–17.9% to 13.8–17.9%.
+- Narrowed the material from "thin charring fuel" to thin cellulose tissue.
+
+## 9. The attack round
+
+A separate reviewer model, in a fresh context with no view of how the work was built, was asked to break each claim. It found no bug that changes a number. Its eight findings and our responses are in `outputs/review.json`, and the changes in §8 follow from them. We reran its two main numerical checks ourselves (`model/sensitivity.py`, `outputs/sensitivity.json`).
+
+## 10. Reproducibility
 
 ```
-python3 model/one_sixth_model.py      # numpy 2.x, Python 3.10+; ~2 s; fixed seed 20261115
+python3 model/run_all.py        # both models; about 2.5 minutes; fixed seeds
+python3 model/sensitivity.py    # review-prompted variants; about 2 minutes
+python3 web/build.py            # rebuild the page
 ```
 
-SHA-256 at registration:
-
-```
-bb0828583c36c35c40c0ece0c7f5372ff9571d3df8d6d0dcab4ca9a732536555  model/one_sixth_model.py
-a9c60daf87dbb2211e236ed7b3ce48d63efd24b8826fd664c5f9bfd5b97dbe22  outputs/results.json
-1ae730705517c7ae5acb3984d41c4d3f5bca1264f0ab7fe853d466f89661df85  data/flammability_evidence.csv
-db4f5fcc2416fd2150e58c2d73d761090106271a640ecd189297eb7c3cf2951f  data/raw/PSI-25_Experimental_table_BASS-II.csv
-```
+SHA-256 at registration: see `HASHES.txt`.
 
 ## References
 
@@ -111,6 +139,8 @@ db4f5fcc2416fd2150e58c2d73d761090106271a640ecd189297eb7c3cf2951f  data/raw/PSI-2
 3. Sacksteder, K.R., T'ien, J.S., "Buoyant downward diffusion flame spread and extinction in partial-gravity accelerations," Proc. Combust. Inst. 25 (1994) 1685–1692.
 4. T'ien, J.S., Sacksteder, K.R., Ferkul, P.V., Grayson, G.D., "Combustion of solid fuel in very low speed oxygen streams," NTRS 19930011018.
 5. Olson, S.L., NASA/TM-2004-213114, p. 123. NTRS 20040084156.
-6. NASA Physical Sciences Informatics, "Burning and Suppression of Solids – II (BASS-II)," PSI-25, v4, DOI 10.60555/4qc4-de67 (CC0).
+6. NASA Physical Sciences Informatics: BASS-II (PSI-25, DOI 10.60555/4qc4-de67), BASS (PSI-26, DOI 10.60555/58h4-dy80), Saffire-I (PSI-98), Saffire-II (PSI-99), Saffire-III (PSI-100). CC0.
 7. Hirsch, D.B., Juarez, A., Peyton, G.J., Harper, S.A., Olson, S.L., "Selected Parametric Effects on Materials Flammability Limits," NTRS 20110008636.
-8. Takahashi, S., et al., Proc. Combust. Inst. 37 (2019) 4257–4265, DOI 10.1016/j.proci.2018.06.102.
+8. Takahashi, S., Ebisawa, T., Bhattacharjee, S., Ihara, T., "Simplified model for predicting difference between flammability limits of a thin material in normal gravity and microgravity environments," Proc. Combust. Inst. 35 (2015) 2535–2543; Takahashi, S., Maruta, K., Trans. JSASS Aerospace Tech. Japan 16 (2018) 28–34; Takahashi, Tsuboi & Maruta, FLARE poster, Gifu University (PMMA values).
+9. "Preliminary Results from the Saffire VI Experiment," ICES 2024. NTRS 20240007488.
+10. Olson, S.L., et al., "Microgravity Flame Spread in Exploration Atmospheres," NTRS 20080034883.

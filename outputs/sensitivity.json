@@ -1,0 +1,113 @@
+{
+ "model1_earth_check_by_prior_on_s": {
+  "uniform_0_20": [
+   14.013019543012536,
+   15.080165521176,
+   21.92062076345393
+  ],
+  "loguniform_0.1_20": [
+   13.91898189512759,
+   14.324041724642068,
+   16.08896400632358
+  ],
+  "uniform_0_40": [
+   14.024025161305747,
+   15.378991571921944,
+   28.76244548039754
+  ]
+ },
+ "null_models_1g": {
+  "no_gravity_effect": 14.5,
+  "note": "midpoint of the 1/6-g bracket carried to 1 g"
+ },
+ "model2_cellulose_with_floor_12.75": {
+  "earth_check": {
+   "accepted": 3714,
+   "predicted_1g": [
+    15.039,
+    15.753,
+    16.599
+   ],
+   "measured": [
+    15.6,
+    16.5
+   ],
+   "inside_90": [
+    true,
+    true
+   ],
+   "median_error": 0.297,
+   "PASSED": true
+  },
+  "LOC_moon_1atm": [
+   13.872,
+   14.253,
+   14.579
+  ],
+  "gravity_penalty": [
+   1.307,
+   1.647,
+   2.084
+  ],
+  "LOC_moon_hab": [
+   15.057,
+   15.698,
+   16.408
+  ],
+  "pressure_rise_1g_relative": [
+   0.057,
+   0.094,
+   0.142
+  ],
+  "min_limit_microgravity": [
+   12.807,
+   13.35,
+   14.028
+  ]
+ },
+ "model2_cellulose_reaction_order_1_to_2": {
+  "earth_check": {
+   "accepted": 23052,
+   "predicted_1g": [
+    15.404,
+    16.247,
+    17.241
+   ],
+   "measured": [
+    15.6,
+    16.5
+   ],
+   "inside_90": [
+    true,
+    true
+   ],
+   "median_error": 0.197,
+   "PASSED": true
+  },
+  "LOC_moon_1atm": [
+   13.823,
+   14.201,
+   14.61
+  ],
+  "gravity_penalty": [
+   1.522,
+   1.887,
+   2.319
+  ],
+  "LOC_moon_hab": [
+   13.843,
+   14.455,
+   15.115
+  ],
+  "pressure_rise_1g_relative": [
+   -0.016,
+   0.015,
+   0.047
+  ],
+  "min_limit_microgravity": [
+   7.404,
+   10.259,
+   13.627
+  ]
+ }
+}
