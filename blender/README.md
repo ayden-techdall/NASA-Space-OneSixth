@@ -1,6 +1,8 @@
 # One-Sixth in Blender
 
-This folder is the workspace for the 3D representation of the result. **The scene has not been built yet.** GPT-6 Astra builds it.
+This folder holds the visual representation of the result, built by GPT-6 Astra: a research plate (`renders/one_sixth_hero.png`, editable in `one_sixth.blend`) and an interactive exhibit (`one_sixth.html`). `NOTES.md` explains what each mark means and how to rebuild them.
+
+![The lunar burn limit](renders/one_sixth_hero.png)
 
 ## What is here
 

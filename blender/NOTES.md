@@ -37,3 +37,7 @@ This command writes blender/one_sixth.blend and the Blender render. The committe
 The registered model code and sensitivity script were rerun with their fixed seeds in an isolated directory. Each source script matched its registered SHA-256. The regenerated curves matched their registered hash. Field comparisons of results and sensitivity outputs found five last-place floating-point differences, with maximum absolute difference 3.56 × 10⁻¹⁵. All displayed values and verdicts reproduced. This checks reproducibility using the original evidence.
 
 The 1920 × 1080 proof was visually inspected. JavaScript checks exercised all three tabs, keyboard selection, the three model reveals, disclosure controls and boundary scoring. The environment blocked the in-app browser from opening a local HTML file, so those checks do not include a browser screenshot.
+
+## Blender verification (added 15 Nov 2026, after the plate was built)
+
+The builder was run headless on Blender 5.3 with `--save --render`. It completed without errors. `one_sixth.blend` is now committed, with its typefaces and the relief image packed inside so it opens the same on any computer. The file was generated on Linux, so its type is set in the DejaVu families. Rebuilding on macOS uses Georgia, Arial and Courier New instead. The committed PNG is still the portable proof render.
