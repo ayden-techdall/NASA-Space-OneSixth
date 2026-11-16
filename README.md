@@ -67,6 +67,18 @@ open web/index.html
 
 Claude (Anthropic) retrieved the NASA data and reports, extracted the evidence rows, wrote the model code, page and write-up, and ran the independent review in a separate context. GPT-6 Astra (OpenAI) designed and built the research plate and the interactive exhibit in `blender/`. The team chose the approach and is responsible for the claims.
 
+## Third-party materials and licenses
+
+Every source used is cited in `FORECAST.md` (References) and in `data/flammability_evidence.csv`.
+
+- **NASA PSI test tables** (BASS-II, BASS, Saffire I–III): CC0-1.0, as released by NASA Physical Sciences Informatics.
+- **NASA NTRS reports:** used as sources. Only test conditions and results were extracted; no text or figures are reproduced.
+- **Published papers** (Sacksteder & T'ien 1994; Takahashi et al. 2015, 2018 and the FLARE poster): used as sources for reported values only.
+- **Python** (PSF License), **NumPy** (BSD-3-Clause), **Pillow** (MIT-CMU): used to run the models and draw the figure. Not redistributed here.
+- **Blender** (GNU GPL): used as a tool to build `blender/one_sixth.blend`. Not redistributed here.
+- **DejaVu fonts**, embedded in `blender/one_sixth.blend`: DejaVu Fonts License (Bitstream Vera derivative), free to use and redistribute.
+- **AI tools:** see "Use of AI" above.
+
 ## License
 
 Code, curated data and text: CC0 1.0. NASA PSI tables: CC0 as released by NASA.
