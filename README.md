@@ -4,6 +4,10 @@ NASA Space Apps Challenge 2026, **Flame in Freefall** · forecast v2 · Ayden Ti
 
 ![Figure 1. Oxygen limits for thin cellulose tissue: forecast 13.8–17.9% at lunar gravity and habitat pressure, against 34% planned habitat air; measured limits at normal pressure for comparison](blender/renders/one_sixth_hero.png)
 
+*Plate made with AI (GPT-6 Astra) from the team's registered data. The Moon in it is illustrative.*
+
+**Demo (7 slides):** [demo/One-Sixth-demo.pdf](demo/One-Sixth-demo.pdf)
+
 **See it live:** [gravity slider](https://ayden-techdall.github.io/NASA-Space-OneSixth/) · [interactive exhibit](https://ayden-techdall.github.io/NASA-Space-OneSixth/exhibit.html) · [the forecast](FORECAST.md)
 
 No fire experiment has run on the Moon. NASA plans landers, habitats and rovers with oxygen-rich air (34% O₂ at 8.2 psia). One-Sixth gathers NASA's reduced-gravity fire data into one cited dataset and forecasts where thin paper-like material stops burning at lunar gravity in that air. The forecast is timestamped so it can be scored when lunar data arrives.
