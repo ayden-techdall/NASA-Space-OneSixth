@@ -1,7 +1,7 @@
 # One-Sixth Forecast v2: How thin materials burn at lunar gravity in Moon-base air
 
 **Registered:** 15 November 2026, before any fire experiment has run on the Moon.
-**Authors:** Ayden Tindall, Charles Andrade (NASA Space Apps Challenge 2026, "Flame in Freefall")
+**Author:** Ayden Tindall (NASA Space Apps Challenge 2026, "Flame in Freefall")
 **License:** CC0 1.0 (public domain)
 **Archive:** Zenodo DOI: *to be added on deposit*
 
