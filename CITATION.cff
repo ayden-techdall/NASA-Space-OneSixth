@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this dataset or forecast, please cite it."
+title: "One-Sixth Forecast v2: How thin materials burn at lunar gravity in Moon-base air"
+type: dataset
+authors:
+  - family-names: Tindall
+    given-names: Ayden
+  - family-names: Andrade
+    given-names: Charles
+version: "2.0"
+date-released: "2026-11-15"
+license: CC0-1.0
+repository-code: "https://github.com/ayden-techdall/NASA-Space-OneSixth"
+abstract: "A cited dataset of NASA reduced-gravity fire tests, two flammability-limit models with held-out Earth checks, and a timestamped forecast of the oxygen limit for thin cellulose at lunar gravity and habitat pressure (8.2 psia). NASA Space Apps Challenge 2026, Flame in Freefall."
+keywords: [flammability, lunar gravity, partial gravity, spacecraft fire safety, NASA Space Apps]

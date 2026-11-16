@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One-Sixth: the first fire forecast for the Moon base</title>
+<style>
+  .viz-root, body {
+    color-scheme: light;
+    --surface-0: #f4f3ef; --surface-1: #fcfcfb; --border: #dedcd5;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77756f;
+    --series-1: #2a78d6; --series-2: #eb6834; --grid: #e7e5df; --hab: #8a8880;
+    --burn: rgba(235,104,52,0.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    body {
+      color-scheme: dark;
+      --surface-0: #111110; --surface-1: #1a1a19; --border: #33322f;
+      --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #8f8d85;
+      --series-1: #3987e5; --series-2: #d95926; --grid: #2a2927; --hab: #9a988f;
+      --burn: rgba(217,89,38,0.08);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--surface-0); color: var(--text-primary);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 32px 20px 64px; }
+  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+  h1 { font-size: 30px; line-height: 1.15; margin: 6px 0 10px; letter-spacing: -.01em; }
+  .lede { color: var(--text-secondary); max-width: 720px; margin: 0 0 24px; }
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-bottom: 12px; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .seg button { background: none; border: 0; color: var(--text-secondary); padding: 7px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--text-primary); color: var(--surface-1); }
+  .slider-row { display: flex; align-items: center; gap: 14px; margin: 6px 0 4px; }
+  .slider-row label { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
+  input[type=range] { flex: 1; accent-color: var(--text-primary); }
+  .stops { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stops button { font: inherit; font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: none; color: var(--text-secondary); cursor: pointer; }
+  .stops button:hover { color: var(--text-primary); }
+  .readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0 6px; }
+  .tile { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .tile .k { font-size: 12px; color: var(--text-muted); }
+  .tile .v { font-size: 26px; font-weight: 650; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+  .tile .r { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
+  svg { width: 100%; height: auto; display: block; }
+  .axis text { fill: var(--text-muted); font-size: 11px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
+  .tip { position: fixed; pointer-events: none; background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: var(--text-primary); box-shadow: 0 4px 16px rgba(0,0,0,.18); display: none; max-width: 280px; }
+  h2 { font-size: 18px; margin: 34px 0 8px; }
+  p, li { color: var(--text-secondary); }
+  .check { display: flex; gap: 12px; align-items: flex-start; }
+  .badge { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); white-space: nowrap; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--text-muted); font-weight: 500; }
+  td { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  a { color: var(--series-1); }
+  .small { font-size: 12px; color: var(--text-muted); }
+  .two { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .pill { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--border); white-space: nowrap; }
+  .ver { font-size: 12px; color: var(--text-muted); margin-left: 8px; }
+  ul.tight { margin: 6px 0 0; padding-left: 18px; } ul.tight li { margin: 4px 0; }
+  details summary { cursor: pointer; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">NASA Space Apps 2026 · Flame in Freefall <span class="ver">forecast v2 · registered 15 Nov 2026</span></div>
+  <h1>One-Sixth: the first fire forecast for the Moon base</h1>
+  <p class="lede">The lowest oxygen level at which a thin paper-like material keeps burning, from orbit to the Moon to Earth.
+    Two models are fitted to NASA's reduced-gravity fire data and checked against Earth results they never saw.
+    Only models that pass get to forecast lunar gravity in the planned habitat air (8.2 psia, 34% O<sub>2</sub>).
+    No fire experiment has run on the Moon yet. Aircraft tests have reached lunar gravity, but only for about 20 seconds at a time.</p>
+
+  <div class="card">
+    <div class="controls">
+      <div class="seg" role="group" aria-label="View">
+        <button id="v-forecast" aria-pressed="true">Forecast</button>
+        <button id="v-check" aria-pressed="false">Earth check</button>
+      </div>
+      <div class="seg" role="group" aria-label="Model">
+        <button id="m-1" aria-pressed="true">Model 1: simple curve</button>
+        <button id="m-2" aria-pressed="false">Model 2: physics</button>
+      </div>
+      <div class="stops" aria-label="Jump to">
+        <button data-g="0.002">Orbit (≈0 g)</button>
+        <button data-g="0.165">Moon</button>
+        <button data-g="0.38">Mars</button>
+        <button data-g="1">Earth</button>
+      </div>
+    </div>
+    <div class="slider-row">
+      <label for="g">Gravity</label>
+      <input id="g" type="range" min="0" max="1000" step="1" value="0" aria-describedby="glabel">
+      <span id="glabel" style="min-width:120px;text-align:right;font-variant-numeric:tabular-nums"></span>
+    </div>
+    <div class="readout" id="readout"></div>
+    <svg id="chart" viewBox="0 0 900 440" role="img" aria-label="Limiting oxygen versus gravity"></svg>
+    <div class="legend" id="legend"></div>
+    <div class="small" style="margin-top:8px">Shaded bands: 90% range of the model. Above a band a thin cellulose sample burns (flame spreading downward in still air); below it the flame goes out.</div>
+  </div>
+
+  <h2>Three Earth checks: one solid pass, one weak pass, one failure</h2>
+  <div class="card">
+    <p style="margin:0 0 10px">Each model was fitted with the Earth results hidden, then asked to predict them. The pass rule was written into the code before the first run: the measured value must fall inside the 90% range and the median must be within 1.5 points.</p>
+    <svg id="checks" viewBox="0 0 900 230" role="img" aria-label="Earth check results"></svg>
+    <div id="checknotes"></div>
+  </div>
+
+  <h2>Why the Moon is the dangerous middle</h2>
+  <div class="card">
+    <p style="margin:0 0 10px">A flame needs a draft. With too little it starves, and with too much it blows off. In orbit the only draft is the fans. On the Moon, weak gravity supplies a gentle draft of its own. NASA has flagged that switching the fans off, which works on the space station, may not put a fire out there.</p>
+    <svg id="ucurve" viewBox="0 0 900 360" role="img" aria-label="Limiting oxygen versus draft speed"></svg>
+    <div class="legend" id="ulegend"></div>
+    <div class="small" style="margin-top:8px">Model 2 for thin cellulose. The dots follow the gravity slider. This model has no cellulose data below about 10 cm/s, so it cannot place the starved side of the curve. The wide band there shows that.</div>
+  </div>
+
+  <h2>The forecast</h2>
+  <div class="card" id="forecast"></div>
+
+  <div id="reviewwrap" style="display:none">
+    <h2>The attack round</h2>
+    <div class="card" id="review"></div>
+  </div>
+
+  <h2>Evidence</h2>
+  <div class="card">
+    <p style="margin:0 0 10px" id="datasummary"></p>
+    <table id="evidence"><thead><tr><th>Gravity</th><th>O<sub>2</sub></th><th>What happened</th><th>Use</th><th>Source</th></tr></thead><tbody></tbody></table>
+    <details style="margin-top:12px"><summary>How the models work</summary>
+      <p><b>Model 1 (simple curve).</b> In still air, buoyancy drives the draft, and its speed scales as g<sup>1/3</sup>. The oxygen limit is modelled as a two-sided line in ln(g)/3: one slope for the starved side, one for the blow-off side. The step from 14.7 to 8.2 psia uses NASA White Sands test slopes.</p>
+      <p><b>Model 2 (physics).</b> A flame survives while heat lost by radiation plus the time the chemistry needs stay below what the draft allows (R<sub>rad</sub> + 1/Da &lt; 1), the structure of the published simplified model by Takahashi and co-workers. Pressure enters through the gas density and the draft speed, so the pressure step comes from the physics.</p>
+      <p>Both are fitted by rejection sampling: draw parameters from broad ranges and keep only sets that agree with every training observation within ±0.25% O<sub>2</sub>.</p>
+    </details>
+  </div>
+
+  <p class="small" style="margin-top:28px">Data: NASA Physical Sciences Informatics (BASS-II PSI-25, BASS PSI-26, Saffire I–III PSI-98/99/100; CC0) and NASA NTRS reports. Model code and dataset are public domain.</p>
+</main>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = __CURVES__;
+const RES = __RESULTS__;
+const REVIEW = __REVIEW__;
+const SENS = __SENS__;
+const R1 = RES.model_1_empirical_cellulose, R2 = RES.model_2_physics, C1 = DATA.model_1, C2 = DATA.model_2;
+
+const W = 900, H = 440, M = {l: 56, r: 24, t: 18, b: 48};
+const gMin = 0.002, gMax = 1.0, yMin = 10, yMax = 40, M2_GMIN = 0.05;
+const X = g => M.l + (Math.log(g) - Math.log(gMin)) / (Math.log(gMax) - Math.log(gMin)) * (W - M.l - M.r);
+const Y = v => M.t + (yMax - v) / (yMax - yMin) * (H - M.t - M.b);
+const css = n => getComputedStyle(document.body).getPropertyValue(n).trim();
+let view = 'forecast', model = 'm1', gNow = 0.165;
+const f1 = v => v.toFixed(1);
+
+const OBS = [
+  {g: 0.05, g2: 0.1, lo: 13, hi: 14, kind: 'interval', use: 'train', txt: 'Limit 13–14% O₂ at 0.05–0.1 g', src: "Sacksteder & T'ien 1994 (KC-135 aircraft)"},
+  {g: 0.1, v: 14, kind: 'burn', use: 'train', txt: 'Burned at 14% O₂, 0.1 g', src: "T'ien et al. 1992, NTRS 19930011018"},
+  {g: 1/6, v: 14, kind: 'out', use: 'train', txt: 'Did not survive at 14% O₂ above 0.1 g', src: "T'ien et al. 1992, NTRS 19930011018"},
+  {g: 1/6, v: 15, kind: 'burn', use: 'train', txt: 'Steady burning at 15% O₂, 1/6 g', src: "T'ien et al. 1992, NTRS 19930011018"},
+  {g: gMin, v: 14, kind: 'burn', use: 'train', txt: 'In orbit with 5–20 cm/s fan flow, flames are sustained even at 14% O₂ (forced flow, so not plotted on the still-air chart)', src: 'Olson 2004, NASA/TM-2004-213114', noplot: true},
+  {g: 1, v: 15.6, kind: 'heldout', use: 'held out', txt: 'Earth limit 15.6% O₂ (downward)', src: "Sacksteder & T'ien 1994"},
+  {g: 1, v: 16.5, kind: 'heldout', use: 'held out', txt: 'Earth limit 16.5% O₂ (opposed flow)', src: 'Olson 2004, NASA/TM-2004-213114'},
+];
+
+function interpAt(xs, arr, x) {
+  if (x <= xs[0]) return arr[0];
+  for (let i = 1; i < xs.length; i++) if (x <= xs[i]) {
+    const t = (Math.log(x) - Math.log(xs[i-1])) / (Math.log(xs[i]) - Math.log(xs[i-1]));
+    return arr[i-1] + t * (arr[i] - arr[i-1]);
+  }
+  return arr[arr.length - 1];
+}
+function series() {
+  if (model === 'm1') return view === 'forecast'
+    ? {g: C1.g, a: C1.final_fit_1atm, b: C1.final_fit_8_2psia, gmin: gMin}
+    : {g: C1.g, a: C1.earth_check_fit_1atm, gmin: gMin};
+  return view === 'forecast'
+    ? {g: C2.g, a: C2.cellulose.final_1atm, b: C2.cellulose.final_hab, gmin: M2_GMIN}
+    : {g: C2.g, a: C2.cellulose.check_1atm, gmin: M2_GMIN};
+}
+function bandPath(xs, c, fx, fy, color, opacity, xmin, clipHi) {
+  const idx = xs.map((x, i) => i).filter(i => xs[i] >= xmin);
+  const cl = v => clipHi ? Math.min(v, clipHi) : v;
+  const top = idx.map(i => `${fx(xs[i])},${fy(cl(c.p95[i]))}`).join(' L');
+  const bot = idx.slice().reverse().map(i => `${fx(xs[i])},${fy(cl(c.p5[i]))}`).join(' L');
+  const mid = idx.map(i => `${fx(xs[i])},${fy(cl(c.p50[i]))}`).join(' L');
+  return `<path d="M${top} L${bot} Z" fill="${color}" fill-opacity="${opacity}" stroke="none"/><path d="M${mid}" fill="none" stroke="${color}" stroke-width="2"/>`;
+}
+
+function draw() {
+  const s1 = css('--series-1'), s2 = css('--series-2'), grid = css('--grid'), muted = css('--text-muted'),
+        prim = css('--text-primary'), surf = css('--surface-1'), hab = css('--hab');
+  const S = series();
+  let o = '';
+  for (let v = 10; v <= 40; v += 5) o += `<line x1="${M.l}" x2="${W-M.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="${grid}"/><g class="axis"><text x="${M.l-8}" y="${Y(v)+4}" text-anchor="end">${v}%</text></g>`;
+  [[0.002,'0.002 g'],[0.01,'0.01 g'],[0.05,'0.05 g'],[0.165,'Moon 0.165 g'],[0.38,'Mars'],[1,'Earth']].forEach(([g,l]) => o += `<line x1="${X(g)}" x2="${X(g)}" y1="${M.t}" y2="${H-M.b}" stroke="${grid}"/><g class="axis"><text x="${X(g)}" y="${H-M.b+18}" text-anchor="middle">${l}</text></g>`);
+  o += `<g class="axis"><text x="${M.l}" y="${H-6}">Gravity (fraction of Earth's, log scale) →</text><text transform="translate(14 ${M.t+150}) rotate(-90)" text-anchor="middle">Oxygen in the air (% by volume)</text></g>`;
+  o += `<line x1="${M.l}" x2="${W-M.r}" y1="${Y(34)}" y2="${Y(34)}" stroke="${hab}" stroke-dasharray="6 4"/><text x="${W-M.r-4}" y="${Y(34)-6}" text-anchor="end" fill="${muted}" font-size="11">Moon habitat air: 34% O₂, 8.2 psia (up to 37%)</text>`;
+  o += `<line x1="${M.l}" x2="${W-M.r}" y1="${Y(21)}" y2="${Y(21)}" stroke="${hab}" stroke-dasharray="2 4"/><text x="${W-M.r-4}" y="${Y(21)-6}" text-anchor="end" fill="${muted}" font-size="11">Earth / ISS air: 21% O₂, 14.7 psia</text>`;
+  if (S.b) o += bandPath(S.g, S.b, X, Y, s2, 0.22, S.gmin);
+  o += bandPath(S.g, S.a, X, Y, s1, 0.22, S.gmin);
+  if (model === 'm2') o += `<text x="${X(0.0035)}" y="${Y(26)}" fill="${muted}" font-size="11">Model 2 is shown only where it has cellulose data (0.05 g and up)</text>`;
+  else o += `<text x="${X(0.0035)}" y="${Y(39)}" fill="${muted}" font-size="11">No still-air data below 0.05 g, so the band widens</text>`;
+  o += `<text x="${M.l+8}" y="${Y(36.5)}" fill="${muted}" font-size="12">BURNS</text><text x="${M.l+8}" y="${Y(11)}" fill="${muted}" font-size="12">WON'T BURN</text>`;
+  OBS.forEach((d, i) => {
+    if (d.noplot) return;
+    const x = X(d.g), fill = (d.kind === 'heldout' && view === 'check') ? surf : prim;
+    if (d.kind === 'interval') o += `<rect x="${X(d.g)}" y="${Y(d.hi)}" width="${X(d.g2)-X(d.g)}" height="${Y(d.lo)-Y(d.hi)}" fill="none" stroke="${prim}" stroke-width="1.5" rx="2" data-i="${i}" class="hit"/>`;
+    else if (d.kind === 'burn') o += `<circle cx="${x}" cy="${Y(d.v)}" r="5" fill="${prim}" stroke="${surf}" stroke-width="2" data-i="${i}" class="hit"/>`;
+    else if (d.kind === 'out') { const y = Y(d.v); o += `<g data-i="${i}" class="hit"><circle cx="${x}" cy="${y}" r="9" fill="transparent"/><path d="M${x-5},${y-5} L${x+5},${y+5} M${x+5},${y-5} L${x-5},${y+5}" stroke="${prim}" stroke-width="2"/></g>`; }
+    else { const y = Y(d.v); o += `<path d="M${x},${y-7} L${x+7},${y} L${x},${y+7} L${x-7},${y} Z" fill="${fill}" stroke="${prim}" stroke-width="1.8" data-i="${i}" class="hit"/>`; }
+  });
+  const xg = X(gNow);
+  o += `<line x1="${xg}" x2="${xg}" y1="${M.t}" y2="${H-M.b}" stroke="${prim}" stroke-width="1.5"/>`;
+  document.getElementById('chart').innerHTML = o;
+  document.querySelectorAll('#chart .hit').forEach(el => {
+    el.style.cursor = 'help';
+    el.addEventListener('mousemove', e => { const d = OBS[+el.dataset.i]; showTip(e, `<b>${d.txt}</b><br>${d.src}<br><i>${d.use === 'train' ? 'Used to fit the model' : (view==='check' ? 'Hidden from the fit: the test' : 'Earth data, added after the test passed')}</i>`); });
+    el.addEventListener('mouseleave', hideTip);
+  });
+  const mname = model === 'm1' ? 'Model 1' : 'Model 2';
+  const L = view === 'forecast'
+    ? `<span><span class="swatch" style="background:${s1}"></span>${mname}, 14.7 psia</span><span><span class="swatch" style="background:${s2}"></span>${mname}, 8.2 psia (habitat)</span>`
+    : `<span><span class="swatch" style="background:${s1}"></span>${mname} fitted without any Earth data</span>`;
+  document.getElementById('legend').innerHTML = L + `<span>● burned &nbsp; × went out &nbsp; ▭ measured limit range &nbsp; ◆ Earth limit${view==='check' ? ' (hidden from fit)' : ''}</span>`;
+  readout(); drawU();
+}
+
+function readout() {
+  const S = series(); let html = '';
+  if (gNow < S.gmin) {
+    html = `<div class="tile"><div class="k">Model 2 at this gravity</div><div class="v">no data</div><div class="r">It has no thin-cellulose tests below 0.05 g. Switch to Model 1.</div></div>`;
+  } else {
+    const a = ['p5','p50','p95'].map(k => interpAt(S.g, S.a[k], gNow));
+    html = `<div class="tile"><div class="k"><span class="swatch" style="background:${css('--series-1')}"></span>Lowest O₂ that burns, 14.7 psia</div><div class="v">${f1(a[1])}%</div><div class="r">90% range ${f1(a[0])}–${f1(a[2])}%</div></div>`;
+    if (S.b) {
+      const b = ['p5','p50','p95'].map(k => interpAt(S.g, S.b[k], gNow));
+      html += `<div class="tile"><div class="k"><span class="swatch" style="background:${css('--series-2')}"></span>Lowest O₂ that burns, 8.2 psia</div><div class="v">${f1(b[1])}%</div><div class="r">90% range ${f1(b[0])}–${f1(b[2])}%</div></div>`;
+      html += `<div class="tile"><div class="k">Habitat air (34% O₂) sits above the limit by</div><div class="v">${34-b[1]>=0 ? f1(34 - b[1]) + ' pts' : 'below limit'}</div><div class="r">90% range ${f1(34-b[2])}–${f1(34-b[0])} pts${(34-b[2])>3 ? ': thin paper burns readily' : (34-b[0])<0 ? ': too little draft to sustain a flame' : ': uncertain here'}</div></div>`;
+    } else {
+      const ec = model === 'm1' ? R1.earth_check.predicted_LOC_1g_p5_p50_p95 : R2.cellulose.earth_check.predicted_1g;
+      html += `<div class="tile"><div class="k">At Earth gravity the hidden data say</div><div class="v">15.6–16.5%</div><div class="r">this model, with no Earth data: ${f1(ec[1])}% (90%: ${f1(ec[0])}–${f1(ec[2])}%)</div></div>`;
+    }
+  }
+  document.getElementById('readout').innerHTML = html;
+}
+
+// ---- Earth-check interval plot ----
+function drawChecks() {
+  const prim = css('--text-primary'), muted = css('--text-muted'), grid = css('--grid'), s1 = css('--series-1'), surf = css('--surface-1');
+  const rows = [
+    {name: 'Model 1 · thin cellulose', r: R1.earth_check.predicted_LOC_1g_p5_p50_p95, meas: [15.6, 16.5], pass: R1.earth_check.PASSED, note: 'passed, weakly'},
+    {name: 'Model 2 · thin cellulose', r: R2.cellulose.earth_check.predicted_1g, meas: [15.6, 16.5], pass: R2.cellulose.earth_check.PASSED, note: 'passed'},
+    {name: 'Model 2 · thin acrylic (PMMA)', r: R2.pmma.earth_check.predicted_1g, meas: [17.0], pass: R2.pmma.earth_check.PASSED, note: 'failed: no forecast'},
+  ];
+  const x0 = 250, x1 = 670, lo = 13, hi = 23, fx = v => x0 + (v - lo) / (hi - lo) * (x1 - x0);
+  let o = '';
+  for (let v = lo; v <= hi; v += 2) o += `<line x1="${fx(v)}" x2="${fx(v)}" y1="20" y2="190" stroke="${grid}"/><text x="${fx(v)}" y="208" text-anchor="middle" fill="${muted}" font-size="11">${v}%</text>`;
+  o += `<text x="${x0}" y="226" fill="${muted}" font-size="11">Oxygen limit at Earth gravity (% O₂)</text>`;
+  rows.forEach((r, i) => {
+    const y = 48 + i * 58;
+    o += `<text x="8" y="${y+4}" fill="${prim}" font-size="13">${r.name}</text>`;
+    o += `<line x1="${fx(r.r[0])}" x2="${fx(r.r[2])}" y1="${y}" y2="${y}" stroke="${s1}" stroke-width="8" stroke-linecap="round" opacity="0.45"/>`;
+    o += `<circle cx="${fx(r.r[1])}" cy="${y}" r="6" fill="${s1}" stroke="${surf}" stroke-width="2"/>`;
+    r.meas.forEach(m => { const x = fx(m); o += `<path d="M${x},${y-8} L${x+8},${y} L${x},${y+8} L${x-8},${y} Z" fill="${surf}" stroke="${prim}" stroke-width="1.8"/>`; });
+    o += `<text x="${x1+16}" y="${y+4}" fill="${prim}" font-size="13" font-weight="600">${r.pass ? '✓' : '✗'} ${r.note}</text>`;
+    o += `<text x="8" y="${y+20}" fill="${muted}" font-size="11">predicted ${f1(r.r[1])}% (${f1(r.r[0])}–${f1(r.r[2])}); measured ${r.meas.map(m => m.toFixed(1)).join(', ')}%</text>`;
+  });
+  document.getElementById('checks').innerHTML = o;
+  const ph = R2.pmma['posthoc_diagnostic_without_BASS-II_low_flow_rows'].predicted_1g;
+  document.getElementById('checknotes').innerHTML = `<div class="legend"><span><span class="swatch" style="background:${s1}"></span>model prediction (dot = median, bar = 90% range)</span><span>◇ measured on Earth, hidden from the fit</span></div>
+  <ul class="tight">
+    <li><b>Model 1's pass is weak.</b> Its range is wide, and the result depends on a modelling choice: with a different starting assumption for the blow-off slope it predicts ${f1(SENS.model1_earth_check_by_prior_on_s['loguniform_0.1_20'][1])}% (${f1(SENS.model1_earth_check_by_prior_on_s['loguniform_0.1_20'][0])}–${f1(SENS.model1_earth_check_by_prior_on_s['loguniform_0.1_20'][2])}%) and fails. The reviewer found this.</li>
+    <li><b>Model 2 passes on cellulose</b> with a much tighter range, and still passes in every variant we tried. The forecast leans on it.</li>
+    <li><b>What the check rules out:</b> "gravity makes no difference" would predict about 14.5% on Earth, and that fails. The check does not tell one curve shape from another.</li>
+    <li><b>Model 2 fails on thin acrylic</b>, predicting ${f1(R2.pmma.earth_check.predicted_1g[1])}% against a measured 17.0%. Space-station fan-flow tests did not transfer to Earth's buoyant flow in this simple model, so we make no acrylic forecast. A diagnostic run after the failure points at the low-speed BASS-II rows: without them the prediction is ${f1(ph[1])}% (${f1(ph[0])}–${f1(ph[2])}%). That run is not a pass.</li>
+  </ul>`;
+}
+
+// ---- U-curve ----
+const UW = 900, UH = 360, UM = {l: 56, r: 24, t: 16, b: 46}, vMin = 5, vMax = 100;
+const UX = v => UM.l + (Math.log(v) - Math.log(vMin)) / (Math.log(vMax) - Math.log(vMin)) * (UW - UM.l - UM.r);
+const UY = v => UM.t + (yMax - v) / (yMax - yMin) * (UH - UM.t - UM.b);
+function drawU() {
+  const s1 = css('--series-1'), s2 = css('--series-2'), grid = css('--grid'), muted = css('--text-muted'), prim = css('--text-primary'), surf = css('--surface-1'), hab = css('--hab');
+  const F = R2.cellulose.forecast, vb = F.draft_speed_earth_cm_s[1], pH = 8.2 / 14.7;
+  let o = '';
+  for (let v = 10; v <= 40; v += 5) o += `<line x1="${UM.l}" x2="${UW-UM.r}" y1="${UY(v)}" y2="${UY(v)}" stroke="${grid}"/><text x="${UM.l-8}" y="${UY(v)+4}" text-anchor="end" fill="${muted}" font-size="11">${v}%</text>`;
+  [5, 10, 20, 50, 100].forEach(v => o += `<line x1="${UX(v)}" x2="${UX(v)}" y1="${UM.t}" y2="${UH-UM.b}" stroke="${grid}"/><text x="${UX(v)}" y="${UH-UM.b+16}" text-anchor="middle" fill="${muted}" font-size="11">${v} cm/s</text>`);
+  o += `<text x="${UM.l}" y="${UH-6}" fill="${muted}" font-size="11">Draft speed at the flame (log scale) →</text>`;
+  o += `<line x1="${UM.l}" x2="${UW-UM.r}" y1="${UY(34)}" y2="${UY(34)}" stroke="${hab}" stroke-dasharray="6 4"/><text x="${UW-UM.r-4}" y="${UY(34)-6}" text-anchor="end" fill="${muted}" font-size="11">Moon habitat air: 34% O₂</text>`;
+  o += bandPath(C2.v, C2.cellulose.u_hab, UX, UY, s2, 0.22, vMin, 40);
+  o += bandPath(C2.v, C2.cellulose.u_1atm, UX, UY, s1, 0.22, vMin, 40);
+  o += `<line x1="${UX(5)}" x2="${UX(20)}" y1="${UY(38.8)}" y2="${UY(38.8)}" stroke="${prim}" stroke-width="2"/><text x="${UX(5)+4}" y="${UY(38.8)+15}" fill="${muted}" font-size="11">space-station fan range, 5–20 cm/s</text>`;
+  [['Moon', 0.165], ['Mars', 0.38], ['Earth', 1]].forEach(([n, g]) => { const v = vb * Math.cbrt(g); o += `<line x1="${UX(v)}" x2="${UX(v)}" y1="${UY(31)}" y2="${UH-UM.b}" stroke="${muted}" stroke-dasharray="2 3"/><text x="${UX(v)}" y="${UY(31)-5}" text-anchor="middle" fill="${muted}" font-size="11">${n}</text>`; });
+  o += `<text x="${UX(vb * Math.cbrt(0.165)) - 26}" y="${UY(31)-5}" text-anchor="end" fill="${muted}" font-size="11">natural draft in still air on:</text>`;
+  if (gNow >= 0.02) {
+    const va = vb * Math.cbrt(gNow), vh = vb * Math.cbrt(gNow / pH);
+    if (va >= vMin) o += `<circle cx="${UX(va)}" cy="${UY(Math.min(40, interpAt(C2.v, C2.cellulose.u_1atm.p50, va)))}" r="6" fill="${s1}" stroke="${surf}" stroke-width="2"/>`;
+    if (vh >= vMin) o += `<circle cx="${UX(vh)}" cy="${UY(Math.min(40, interpAt(C2.v, C2.cellulose.u_hab.p50, vh)))}" r="6" fill="${s2}" stroke="${surf}" stroke-width="2"/>`;
+  }
+  o += `<text x="${UX(45)}" y="${UY(37.5)}" fill="${muted}" font-size="12">BURNS</text>`;
+  document.getElementById('ucurve').innerHTML = o;
+  document.getElementById('ulegend').innerHTML = `<span><span class="swatch" style="background:${s1}"></span>14.7 psia</span><span><span class="swatch" style="background:${s2}"></span>8.2 psia (habitat)</span><span>Draft in still air at the slider's gravity: ${gNow < 0.02 ? 'under 10 cm/s (off the chart)' : f1(vb * Math.cbrt(gNow)) + ' cm/s at 14.7 psia'}</span>`;
+}
+
+const tip = document.getElementById('tip');
+function showTip(e, h) { tip.innerHTML = h; tip.style.display = 'block'; tip.style.left = Math.min(e.clientX + 14, innerWidth - 300) + 'px'; tip.style.top = (e.clientY + 14) + 'px'; }
+function hideTip() { tip.style.display = 'none'; }
+
+const slider = document.getElementById('g');
+const toSlider = g => Math.round((Math.log(g) - Math.log(gMin)) / (Math.log(gMax) - Math.log(gMin)) * 1000);
+const fromSlider = v => Math.exp(Math.log(gMin) + v / 1000 * (Math.log(gMax) - Math.log(gMin)));
+function setG(g) {
+  gNow = g; slider.value = toSlider(g);
+  const name = Math.abs(g - 0.165) < 0.004 ? ' · Moon' : Math.abs(g - 0.38) < 0.01 ? ' · Mars' : g > 0.985 ? ' · Earth' : g < 0.0025 ? ' · orbit' : '';
+  document.getElementById('glabel').textContent = `${g < 0.01 ? g.toFixed(3) : g.toFixed(2)} g${name}`;
+  draw();
+}
+slider.addEventListener('input', () => setG(fromSlider(+slider.value)));
+document.querySelectorAll('.stops button').forEach(b => b.addEventListener('click', () => setG(+b.dataset.g)));
+function press() {
+  document.getElementById('v-forecast').setAttribute('aria-pressed', view === 'forecast');
+  document.getElementById('v-check').setAttribute('aria-pressed', view === 'check');
+  document.getElementById('m-1').setAttribute('aria-pressed', model === 'm1');
+  document.getElementById('m-2').setAttribute('aria-pressed', model === 'm2');
+}
+document.getElementById('v-forecast').onclick = () => { view = 'forecast'; press(); draw(); };
+document.getElementById('v-check').onclick = () => { view = 'check'; press(); setG(1); };
+document.getElementById('m-1').onclick = () => { model = 'm1'; press(); draw(); };
+document.getElementById('m-2').onclick = () => { model = 'm2'; press(); if (gNow < M2_GMIN) setG(0.165); else draw(); };
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { draw(); drawChecks(); });
+
+// ---- forecast table ----
+const A = R1.forecast, B = R2.cellulose.forecast, rng = a => `${f1(a[0])}–${f1(a[2])}`;
+const habAll = [A['LOC_moon_8.2psia'], B.LOC_moon_hab, SENS['model2_cellulose_with_floor_12.75'].LOC_moon_hab, SENS.model2_cellulose_reaction_order_1_to_2.LOC_moon_hab];
+const HAB_LO = Math.min(...habAll.map(a => a[0])), HAB_HI = Math.max(...habAll.map(a => a[2]));
+document.getElementById('forecast').innerHTML = `
+  <table>
+    <tr><th>Thin cellulose, flame spreading downward in still air</th><th>Model 1</th><th>Model 2</th></tr>
+    <tr><td>Oxygen limit at lunar gravity, 14.7 psia</td><td>${f1(A.LOC_moon_1atm[1])}% (${rng(A.LOC_moon_1atm)})</td><td>${f1(B.LOC_moon_1atm[1])}% (${rng(B.LOC_moon_1atm)})</td></tr>
+    <tr><td>Oxygen limit at Earth gravity, 14.7 psia</td><td>${f1(A.LOC_earth_1atm[1])}% (${rng(A.LOC_earth_1atm)})</td><td>${f1(B.LOC_earth_1atm[1])}% (${rng(B.LOC_earth_1atm)})</td></tr>
+    <tr><td><b>Lunar gravity penalty</b>: how much lower the limit is on the Moon than on Earth at the same pressure</td><td><b>${f1(A['gravity_penalty_pts_(LOC1g-LOCmoon)'][1])} pts</b> (${rng(A['gravity_penalty_pts_(LOC1g-LOCmoon)'])})</td><td><b>${f1(B.gravity_penalty[1])} pts</b> (${rng(B.gravity_penalty)})</td></tr>
+    <tr><td>Oxygen limit at lunar gravity, <b>habitat pressure 8.2 psia</b></td><td>${f1(A['LOC_moon_8.2psia'][1])}% (${rng(A['LOC_moon_8.2psia'])})</td><td>${f1(B.LOC_moon_hab[1])}% (${rng(B.LOC_moon_hab)})</td></tr>
+    <tr><td>Same, Model 2 variants: with a floor on the starved side; with reaction order 1–2</td><td></td><td>${f1(SENS['model2_cellulose_with_floor_12.75'].LOC_moon_hab[1])}%; ${f1(SENS.model2_cellulose_reaction_order_1_to_2.LOC_moon_hab[1])}%</td></tr>
+    <tr><td>Margin below habitat air (34% O₂)</td><td>${f1(A.margin_vs_34pct_O2_pts[1])} pts</td><td>${f1(B.margin_vs_34[1])} pts</td></tr>
+  </table>
+  <p class="small" style="margin:6px 0 0">Median, with the 90% range in brackets. The two models share the same reduced-gravity evidence, so their agreement is not two independent confirmations.</p>
+  <ul class="tight">
+    <li><b>Already measured, not predicted:</b> at 14.7 psia, NASA's aircraft tests put the lunar limit between 14% and 15% O₂. Both models reproduce that, about 1.0–2.4 points below the Earth limit. The tests lasted about 20 seconds each.</li>
+    <li><b>Forecast 1, habitat air:</b> at lunar gravity <i>and</i> 8.2 psia, thin cellulose tissue keeps burning down to <b>${f1(HAB_LO)}–${f1(HAB_HI)}% O₂</b>, most likely near 15.5%. No test exists at this combination. The range covers both models and every assumption we tested.</li>
+    <li><b>Forecast 2, a long burn on the Moon:</b> the 20-second aircraft result will hold up, and the steady lunar limit for this material will sit below its Earth limit. If a long lunar test finds it at or above Earth's, we were wrong.</li>
+    <li><b>For fire rules:</b> a thin material that only just passes an Earth test has no built-in margin on the Moon. The planned 34% habitat air is about twice the limit, which is a sanity check more than a discovery: paper burns there.</li>
+    <li><b>Natural draft:</b> scaling Earth's buoyant draft of roughly 35 cm/s by the cube root of gravity puts still-air draft on the Moon near ${Math.round(B.draft_speed_moon_cm_s[1])} cm/s, inside the range where these flames survive on the space station.</li>
+  </ul>`;
+
+if (REVIEW && REVIEW.length) {
+  document.getElementById('reviewwrap').style.display = '';
+  document.getElementById('review').innerHTML = `<p style="margin:0 0 8px">A separate reviewer, with no view of how the work was built, was asked to break each prediction. What it found and what we changed:</p><table><tr><th>Finding</th><th>What we did</th></tr>${REVIEW.map(r => `<tr><td>${r.finding}</td><td>${r.action}</td></tr>`).join('')}</table>`;
+}
+
+document.getElementById('datasummary').innerHTML = `The dataset holds NASA's test tables for BASS-II (129 tests), BASS (122), and Saffire I–III, as served by NASA's archive, plus 41 curated evidence rows with citations. One of them is worth knowing: Saffire-VI burned fabric <b>in orbit</b> at 54 kPa and 31% O₂, close to habitat air. What no experiment has covered yet is lunar gravity. The rows below are the ones the cellulose models use.`;
+const tb = document.querySelector('#evidence tbody');
+OBS.forEach(d => { tb.innerHTML += `<tr><td>${d.kind==='interval' ? '0.05–0.1 g' : d.g < 0.01 ? '≈0 g (orbit, fan flow)' : d.g.toFixed(2) + ' g'}</td><td>${d.kind==='interval' ? '13–14%' : d.v + '%'}</td><td>${d.txt}</td><td>${d.use}</td><td>${d.src}</td></tr>`; });
+
+drawChecks(); setG(0.165);
+</script>
+</body>
+</html>
