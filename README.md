@@ -2,7 +2,7 @@
 
 NASA Space Apps Challenge 2026, **Flame in Freefall** · forecast v2 · Ayden Tindall and Charles Andrade
 
-![The lunar burn limit: thin paper keeps burning down to 13.8–17.9% oxygen at lunar gravity and habitat pressure; planned habitat air is 34%](blender/renders/one_sixth_hero.png)
+![Figure 1. Oxygen limits for thin cellulose tissue: forecast 13.8–17.9% at lunar gravity and habitat pressure, against 34% planned habitat air; measured limits at normal pressure for comparison](blender/renders/one_sixth_hero.png)
 
 **See it live:** [gravity slider](https://ayden-techdall.github.io/NASA-Space-OneSixth/) · [interactive exhibit](https://ayden-techdall.github.io/NASA-Space-OneSixth/exhibit.html) · [the forecast](FORECAST.md)
 
@@ -36,7 +36,7 @@ No fire experiment has run on the Moon. NASA plans landers, habitats and rovers 
 | `outputs/review.json` | The reviewer's eight findings and what we did about each. |
 | `outputs/v1/` | The v1 outputs, kept for the record. |
 | `docs/index.html` | A copy of the page for GitHub Pages (Settings → Pages → branch `main`, folder `/docs`). |
-| `blender/` | The research plate (`renders/one_sixth_hero.png`, `one_sixth.blend`), its Blender builder, and the interactive exhibit (`one_sixth.html`), built by GPT-6 Astra from `scene_data.json`. See `blender/NOTES.md`. |
+| `blender/` | The headline figure (`renders/one_sixth_hero.png`, `one_sixth.blend`), its Blender builder, and the interactive exhibit (`one_sixth.html`), built by GPT-6 Astra from `scene_data.json`. See `blender/NOTES.md`. |
 | `docs/exhibit.html` | A copy of the interactive exhibit for GitHub Pages. |
 | `AGENTS.md` | Briefing for AI agents working in this repo: safe numbers, wording to avoid, and the Blender task. |
 | `SUBMISSION.md` | Text for the Space Apps form and the demo script. |
