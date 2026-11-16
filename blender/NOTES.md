@@ -40,3 +40,5 @@ The 1920 × 1080 proof was visually inspected. JavaScript checks exercised all t
 ## Blender verification of the original illustrated layout (15 Nov 2026)
 
 The builder was run headless on Blender 5.3 with `--save --render`. It completed without errors. `one_sixth.blend` is now committed, with its typefaces and the relief image packed inside so it opens the same on any computer. The file was generated on Linux, so its type is set in the DejaVu families. Rebuilding on macOS uses Georgia, Arial and Courier New instead. The committed PNG is still the portable proof render.
+
+Update, 15 Nov 2026: `one_sixth.blend` was rebuilt from the technical-figure layout by running the builder headless on Blender 5.3, so the Blender file and the PNG now show the same figure. It was generated on Linux, so its type is set in DejaVu Sans; rebuilding on macOS uses Arial.
