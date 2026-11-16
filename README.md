@@ -26,16 +26,10 @@ No fire experiment has run on the Moon. NASA plans landers, habitats and rovers 
 | `outputs/review.json` | The reviewer's eight findings and what we did about each. |
 | `outputs/v1/` | The v1 outputs, kept for the record. |
 | `docs/index.html` | A copy of the page for GitHub Pages (Settings → Pages → branch `main`, folder `/docs`). |
-| `blender/` | The result as a 3D Blender scene, built from the same numbers. See `blender/README.md`. |
+| `blender/` | Workspace and data file for a 3D Blender scene of the result, to be built by GPT-6 Astra. See `blender/README.md`. |
 | `AGENTS.md` | Briefing for AI agents working in this repo: safe numbers, wording to avoid, and the Blender task. |
 | `SUBMISSION.md` | Text for the Space Apps form and the demo script. |
 | `HASHES.txt` | SHA-256 of the registered files. |
-
-## In 3D
-
-![One-Sixth in Blender](blender/renders/one_sixth_hero.png)
-
-Left to right is gravity, height is oxygen. The lit part of each column is where thin paper burns. The Moon-base column on the orange row carries the forecast, with the planned 34% habitat air marked far above it.
 
 ## Run it
 
