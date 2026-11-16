@@ -50,51 +50,47 @@ Take numbers from `blender/scene_data.json`. It is generated from the registered
 
 If you believe a number in a protected file is wrong, do not change it. Open an issue or leave a note in `blender/NOTES.md`.
 
-## 5. Your task: the Blender scene
+## 5. Your task: build the Blender scene
+
+**The scene is yours to build. Nothing has been built yet.** The team wants GPT-6 Astra to design and build the 3D representation. This repo gives you the context and the numbers, not a starting scene.
 
 **Goal.** A 3D picture that lets a hackathon judge grasp the result in ten seconds: thin paper burns far below the oxygen level planned for Moon habitats, and the Moon is a slightly easier place to burn than Earth.
 
-**Starting point.** `blender/build_scene.py` already builds a working scene from `blender/scene_data.json`, and `blender/renders/one_sixth_hero.png` shows the current state. `blender/one_sixth.blend` is the saved file. Improve on these; do not start from nothing.
+**Your data.** `blender/scene_data.json` holds every number you need, generated from the registered model outputs by `blender/make_scene_data.py`:
 
-```bash
-python3 blender/make_scene_data.py                                  # refresh the data file
-blender --background --python blender/build_scene.py -- --render --save
-```
+- `atmospheres`: Earth air (21% O2) and the planned habitat air (34% O2 at 8.2 psia).
+- `headline`: the forecast range at lunar gravity and 8.2 psia (13.8–17.9%, central 15.5%), and the measured Moon bracket at normal pressure.
+- `stations`: Orbit, Moon, Mars, Earth, each with gravity, the oxygen limit at 14.7 psia and 8.2 psia with its 90% range, and the natural draft speed.
+- `curves`: the oxygen limit against gravity for both models at both pressures. Model 2 is valid only from 0.05 g upward. Model 1 covers the whole range and widens where there is no data.
+- `evidence`: the NASA measurements the models were fitted to.
+- `earth_checks`: the three Earth checks and their verdicts.
+- `wording`: sentences you may use and sentences you must never use.
 
-**What the scene encodes (keep this mapping):**
+**What the scene must get right:**
 
-- X axis: gravity on a log scale, with stations Orbit, Moon, Mars, Earth.
-- Z axis: oxygen in the air, 0–40%.
-- Front row (blue): 14.7 psia. Back row (orange): 8.2 psia, the habitat pressure.
-- Ribbons: the oxygen limit with its 90% range. The solid ribbon is model 2 and exists only from 0.05 g upward. The ghost ribbon is model 1.
-- Columns: the lit part is where paper burns. Rings mark 21% and 34% air.
-- The hero is the Moon-base column on the back row: forecast range 13.8–17.9%, with the 34% ring far above it.
-- Markers: NASA measurements (burned, went out, limit range, Earth limit).
-- Frames 1–240: a gate travels from orbit to Earth, the 3D version of the page's gravity slider.
+- The forecast (13.8–17.9% O2) belongs to one place only: lunar gravity at habitat pressure. Show the planned 34% habitat air against it, so the gap is obvious.
+- Keep measured and forecast visibly different. The Moon limit at normal pressure is a NASA measurement.
+- Show uncertainty as ranges, not single sharp values.
+- Anything decorative (flame shapes, a habitat, a lunar surface) is illustrative. Say so in the scene or the caption.
+- Every label readable at 1920×1080.
 
-**Known weaknesses to fix, in priority order:**
-
-1. Legibility. Labels overlap in places and some text is small. Every label must be readable at 1920×1080.
-2. The hero does not stand out enough. Make the Moon-base column and the gap up to the 34% ring the first thing the eye lands on.
-3. Flames look like plain blobs. Make them read as flames: round and blue in weak gravity, tall and yellow on Earth. Keep them clearly illustrative.
-4. The ground is a flat grey slab. A simple lunar surface and a visible habitat dome behind the Moon station would help, as long as they stay in the background.
-5. Camera. Find a three-quarter view where both rows separate cleanly.
+**The design is your call.** One idea that maps cleanly onto the data: gravity left to right (Orbit, Moon, Mars, Earth), oxygen as height, one row per pressure, the limit as a ribbon with its range, and the Moon-base forecast as the hero. You may do something different if it tells the story better.
 
 **Deliverables, all under `blender/`:**
 
-- `one_sixth.blend` — the editable scene, with objects named and grouped as now.
+- `one_sixth.blend` — the editable scene, with objects named and grouped.
+- `build_scene.py` — a Blender Python script that rebuilds the scene from `scene_data.json`, so the numbers are never typed by hand.
 - `renders/one_sixth_hero.png` — 1920×1080 still.
-- `renders/one_sixth_slider.mp4` — optional, 8–10 s, the gate travelling from orbit to Earth. Useful for the 30-second demo video.
-- `build_scene.py` — updated so that running it reproduces the scene. Keep it data-driven.
-- `NOTES.md` — what you changed, and which parts are data and which are illustrative.
+- `renders/one_sixth_slider.mp4` — optional, 8–10 s, travelling from orbit to Earth. Useful for the 30-second demo video.
+- `NOTES.md` — what you built, and which parts are data and which are illustrative.
 
 **Acceptance checklist:**
 
 - [ ] Every number in the scene comes from `scene_data.json`.
 - [ ] The words in section 3 do not appear.
-- [ ] "Forecast" is attached only to the 8.2 psia Moon column.
-- [ ] Flames are labelled illustrative.
-- [ ] `build_scene.py` runs headless without errors on Blender 4.2 or later.
+- [ ] "Forecast" is attached only to lunar gravity at 8.2 psia.
+- [ ] Decorative elements are labelled illustrative.
+- [ ] `build_scene.py` runs headless without errors.
 - [ ] No protected file changed (`git status` shows only `blender/`).
 
 ## 6. Working rules
