@@ -12,4 +12,7 @@ t = t.replace("__SENS__", (root / "outputs/sensitivity.json").read_text())
 (root / "web/index.html").write_text(t)
 (root / "docs").mkdir(exist_ok=True)
 (root / "docs/index.html").write_text(t)
-print("wrote web/index.html and docs/index.html")
+ex = root / "blender/one_sixth.html"
+if ex.exists():
+    (root / "docs/exhibit.html").write_text(ex.read_text())
+print("wrote web/index.html, docs/index.html and docs/exhibit.html")

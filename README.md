@@ -1,8 +1,18 @@
 # One-Sixth: the first fire forecast for the Moon base
 
-NASA Space Apps Challenge 2026, **Flame in Freefall** · forecast v2
+NASA Space Apps Challenge 2026, **Flame in Freefall** · forecast v2 · Ayden Tindall and Charles Andrade
 
-No fire experiment has run on the Moon. NASA plans landers, habitats and rovers with oxygen-rich air (34% O₂ at 8.2 psia). One-Sixth gathers NASA's reduced-gravity fire data into one cited dataset and fits two models to it. Each model is checked against Earth results it never saw, and only models that pass get to forecast. A separate reviewer then tries to break every claim. The forecast is timestamped so it can be scored when lunar data arrives.
+![The lunar burn limit: thin paper keeps burning down to 13.8–17.9% oxygen at lunar gravity and habitat pressure; planned habitat air is 34%](blender/renders/one_sixth_hero.png)
+
+**See it live:** [gravity slider](https://ayden-techdall.github.io/NASA-Space-OneSixth/) · [interactive exhibit](https://ayden-techdall.github.io/NASA-Space-OneSixth/exhibit.html) · [the forecast](FORECAST.md)
+
+No fire experiment has run on the Moon. NASA plans landers, habitats and rovers with oxygen-rich air (34% O₂ at 8.2 psia). One-Sixth gathers NASA's reduced-gravity fire data into one cited dataset and forecasts where thin paper-like material stops burning at lunar gravity in that air. The forecast is timestamped so it can be scored when lunar data arrives.
+
+## What makes this different
+
+- **Models had to earn the Moon.** Each model was fitted with the Earth results hidden and had to predict them. One passed, one passed weakly, and one failed. The one that failed was dropped and makes no forecast.
+- **We published the attack on our own work.** A second AI reviewer, with no view of how the project was built, tried to break every claim. It showed our first version overclaimed. We withdrew or weakened those claims, and its eight findings are in `outputs/review.json`.
+- **It ends in one test NASA could run.** Thin cellulose, burning downward, at lunar gravity and 8.2 psia, across 13–19% oxygen. That single test settles the forecast.
 
 ## Results in brief
 
@@ -26,7 +36,8 @@ No fire experiment has run on the Moon. NASA plans landers, habitats and rovers 
 | `outputs/review.json` | The reviewer's eight findings and what we did about each. |
 | `outputs/v1/` | The v1 outputs, kept for the record. |
 | `docs/index.html` | A copy of the page for GitHub Pages (Settings → Pages → branch `main`, folder `/docs`). |
-| `blender/` | Workspace and data file for a 3D Blender scene of the result, to be built by GPT-6 Astra. See `blender/README.md`. |
+| `blender/` | The research plate (`renders/one_sixth_hero.png`, `one_sixth.blend`), its Blender builder, and the interactive exhibit (`one_sixth.html`), built by GPT-6 Astra from `scene_data.json`. See `blender/NOTES.md`. |
+| `docs/exhibit.html` | A copy of the interactive exhibit for GitHub Pages. |
 | `AGENTS.md` | Briefing for AI agents working in this repo: safe numbers, wording to avoid, and the Blender task. |
 | `SUBMISSION.md` | Text for the Space Apps form and the demo script. |
 | `HASHES.txt` | SHA-256 of the registered files. |
@@ -50,7 +61,7 @@ open web/index.html
 
 ## Use of AI
 
-Claude (Anthropic) retrieved the NASA data and reports, extracted the evidence rows, wrote the model code, page and write-up, and ran the independent review in a separate context. The team chose the approach and is responsible for the claims.
+Claude (Anthropic) retrieved the NASA data and reports, extracted the evidence rows, wrote the model code, page and write-up, and ran the independent review in a separate context. GPT-6 Astra (OpenAI) designed and built the research plate and the interactive exhibit in `blender/`. The team chose the approach and is responsible for the claims.
 
 ## License
 

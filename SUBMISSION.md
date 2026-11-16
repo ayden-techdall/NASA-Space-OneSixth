@@ -6,13 +6,23 @@ One-Sixth: the first fire forecast for the Moon base
 ## High-level summary
 No fire experiment has run on the Moon, yet NASA plans habitats with oxygen-rich air (34% O₂ at 8.2 psia). One-Sixth gathers NASA's reduced-gravity fire data into one cited dataset and fits two models to it. Each model must predict Earth results it never saw before it is allowed to forecast: one passed, one passed weakly, and one failed and was dropped. A separate AI reviewer then attacked every claim, and we withdrew or weakened what it broke. What survives is a timestamped forecast: at lunar gravity and habitat pressure, thin paper-like material keeps burning down to 13.8–17.9% oxygen, far below the planned 34%. It can be scored when NASA's first lunar fire experiment (FM2) and later tests report.
 
+## What makes it different
+- **Models had to earn the Moon.** Each was fitted with the Earth results hidden and had to predict them. One passed, one passed weakly, one failed and was dropped.
+- **We published the attack on our own work.** A second AI reviewer broke our first claims. We withdrew or weakened them and published all eight findings.
+- **It ends in one test NASA could run:** thin cellulose, burning downward, at lunar gravity and 8.2 psia, across 13–19% oxygen.
+
+## Links
+- Repository: https://github.com/ayden-techdall/NASA-Space-OneSixth
+- Gravity slider: https://ayden-techdall.github.io/NASA-Space-OneSixth/
+- Interactive exhibit: https://ayden-techdall.github.io/NASA-Space-OneSixth/exhibit.html
+
 ## Project details
 - **What it does:** an open dataset, two models with held-out Earth checks, a registered forecast, an interactive gravity slider, and a published attack round.
 - **How it works:** in still air, buoyancy drives the draft that feeds a flame, and its speed scales as g^(1/3). Too little draft starves a flame and too much blows it off. Model 1 fits a two-sided curve in gravity. Model 2 balances radiative loss and reaction time against draft speed, which also gives a physical pressure step. Both are fitted by rejection sampling.
 - **What we found:** NASA's 20-second aircraft tests already bracket the lunar limit for thin paper between 14% and 15% oxygen at normal pressure, 1 to 2.4 points below Earth. Our models tie those tests to Earth results and carry them to habitat pressure, where no test exists.
 - **Benefits:** it shows where the evidence stops (lunar gravity at low pressure), names the single test that would settle it (thin cellulose, downward, 8.2 psia, 13–19% O₂), and shows that an Earth screening result carries no built-in margin to the Moon for this material class.
 - **Honesty:** one of three Earth checks failed and is reported. The reviewer's eight findings and our responses are published with the project.
-- **Tools:** Python (NumPy), plain HTML/SVG. Claude (Anthropic) retrieved data, extracted evidence, wrote code and text, and ran the independent review. The team chose the approach and is responsible for the claims.
+- **Tools:** Python (NumPy), plain HTML/SVG, Blender. Claude (Anthropic) retrieved data, extracted evidence, wrote code and text, and ran the independent review. GPT-6 Astra (OpenAI) built the research plate and interactive exhibit. The team chose the approach and is responsible for the claims.
 
 ## NASA data used
 - NASA PSI: BASS-II (PSI-25, DOI 10.60555/4qc4-de67), BASS (PSI-26, DOI 10.60555/58h4-dy80), Saffire-I, -II, -III (PSI-98, PSI-99, PSI-100)
