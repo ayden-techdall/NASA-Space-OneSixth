@@ -4,7 +4,7 @@ NASA Space Apps Challenge 2026, **Flame in Freefall** · forecast v2 · Ayden Ti
 
 ![Figure 1. Oxygen limits for thin cellulose tissue: forecast 13.8–17.9% at lunar gravity and habitat pressure, against 34% planned habitat air; measured limits at normal pressure for comparison](blender/renders/one_sixth_hero.png)
 
-*Plate made with AI (GPT-6 Astra) from the team's registered data. The Moon in it is illustrative.*
+*Figure made with AI (GPT-6 Astra) from the team's registered data.*
 
 **Demo (7 slides):** [demo/One-Sixth-demo.pdf](demo/One-Sixth-demo.pdf)
 
